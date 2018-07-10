@@ -2,7 +2,6 @@ import random
 import cv2
 import imutils
 import numpy as np
-from imutils.paths import list_images
 from .color_utils import tint_recolor
 
 
@@ -25,24 +24,25 @@ def pixelate(image, ncol=10, out_width=500):
     return pixelated, (nrow, ncol)
 
 
-def create_icon_grid(icon_path, dims, icon_size):
+def create_icon_grid(icon_paths, dims, icon_size):
     """create a grid of icon images given a path to the icon image dir
 
-    :param icon_path: (str) path to directory containing images of icons
+    :param icon_paths: list of paths for images of icons
     :param dims: (tuple) integers giving the size of the grid in (rows, cols)
     :param icon_size: (int) height/width of icons in grid; assumed to be square
     :return: a numpy array OpenCV image showing a grid of random icons
 
-    >>> icon_grid = create_icon_grid('my/icon/dir', (10, 20), 6)
+    >>> from imutils.paths import list_images
+    >>> icon_paths = list(list_images('my/icon/dir'))
+    >>> icon_grid = create_icon_grid(icon_paths, (10, 20), 6)
     """
-    all_icon_paths = list(list_images(icon_path))
     nrow, ncol = dims
 
     cols = []
     for col in range(ncol):
         col = []
         for row in range(nrow):
-            icon = cv2.imread(random.choice(all_icon_paths))
+            icon = cv2.imread(random.choice(icon_paths))
             resized_icon = cv2.resize(icon, (icon_size, icon_size))
             col.append(resized_icon)
         cols.append(np.vstack(col))
@@ -52,25 +52,27 @@ def create_icon_grid(icon_path, dims, icon_size):
     return grid
 
 
-def pixel_icon_recolor(target_image, icon_path, ncol=200, out_width=500, recolor_alpha=0.7):
+def pixel_icon_recolor(target_image, icon_paths, ncol=200, out_width=500, recolor_alpha=0.7):
     """convert an image to a 'pixelated' image where the pixels are icons
 
     :param target_image: (numpy array) OpenCV image to be pixelated with icons
-    :param icon_path: (str) path to directory containing images of icons
+    :param icon_paths: list of paths for images of icons
     :param ncol: (int) how many icons wide should output image be
     :param out_width: (int) width of output image; aspect ratio of target_image will be preserved
     :param recolor_alpha: (float) alpha value [0-1] for recoloring icons to resemble pixelated target_image
     :return: a pixelated version of the target image where the pixels are icons from icon_path dir
 
+    >>> from imutils.paths import list_images
+    >>> icon_paths = list(list_images('my/icon/dir'))
     >>> image_to_process = cv2.imread('path/to/image.png')
-    >>> icon_pixel_image = pixel_icon_recolor(image_to_process, icon_path='my/icon/dir')
+    >>> icon_pixel_image = pixel_icon_recolor(image_to_process, icon_paths=icon_paths)
     """
     pixelated_target, (nrow, ncol) = pixelate(target_image, ncol=ncol, out_width=out_width)
     icon_size = pixelated_target.shape[1] // ncol
     pixelated_target = imutils.resize(pixelated_target, width=icon_size * ncol + 1)
 
     # create oversize grid to avoid mismatch dims with pixelated target
-    icon_grid = create_icon_grid(icon_path, (nrow * 2, ncol * 2), icon_size)
+    icon_grid = create_icon_grid(icon_paths, (nrow * 2, ncol * 2), icon_size)
     icon_grid_crop = icon_grid[0:pixelated_target.shape[0], 0:pixelated_target.shape[1]]
 
     cv2.addWeighted(pixelated_target, recolor_alpha, icon_grid_crop, 1 - recolor_alpha, 0, icon_grid_crop)

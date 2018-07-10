@@ -2,7 +2,6 @@ from collections import Counter
 import cv2
 import numpy as np
 import pandas as pd
-from imutils.paths import list_images
 from sklearn.cluster import KMeans
 
 
@@ -74,19 +73,21 @@ def get_dominant_color_hsv(bgr_image, k=3, image_processing_size=None):
     return get_dominant_color(hsv_image, k, image_processing_size)
 
 
-def get_dominant_color_dir(dir_path, max_icons=1000, verbose=True):
+def get_dominant_color_paths(paths, max_icons=1000, verbose=True):
     """find dir of images dominant colors and return as a pandas df
 
-    :param dir_path: (str) path to directory containing images
+    :param paths: iterable of string paths to icons
     :param max_icons: (int) max number of icons to process (for debug)
     :param verbose: (bool) should progress messages be printed to screen
     :return: a pandas dataframe with columns: ['path', 'h', 's', 'v'];
             where path is the path to the icon image, hsv are the values of the icon's dominant color
 
-    >>> color_stats_df = get_dominant_color_dir('path/to/image/dir')
+    >>> from imutils.paths import list_images
+    >>> icon_paths = list(list_images('my/icon/dir'))
+    >>> color_stats_df = get_dominant_color_dir(icon_paths)
     """
     icon_stats_list = []
-    for i, path in enumerate(list_images(dir_path)):
+    for i, path in enumerate(paths):
         if verbose:
             print('processing icon #{}'.format(i))
         if i >= max_icons:
