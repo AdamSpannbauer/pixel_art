@@ -1,5 +1,8 @@
-# pres
+# various files
 *.key
+download_icons.py
+icon_pixelate.py
+icon_stat_df.csv
 
 # icons
 icons/*
