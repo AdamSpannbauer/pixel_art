@@ -3,6 +3,7 @@ import cv2
 import imutils
 import numpy as np
 from .color_utils import tint_recolor
+from .utils import imread
 
 
 def pixelate(image, ncol=10, out_width=500):
@@ -40,10 +41,12 @@ def create_icon_grid(icon_paths, dims, icon_size):
 
     cols = []
     for col in range(ncol):
+        print(col)
         col = []
         for row in range(nrow):
-            icon = cv2.imread(random.choice(icon_paths))
+            icon = imread(random.choice(icon_paths))
             resized_icon = cv2.resize(icon, (icon_size, icon_size))
+
             col.append(resized_icon)
         cols.append(np.vstack(col))
 
@@ -139,7 +142,7 @@ def pixel_icon_match(target_image, icon_stat_df,
                 sample_paths = icon_stat_df['path'].tolist()
                 alpha_i = unmatched_alpha
 
-            icon = cv2.imread(random.choice(sample_paths))
+            icon = imread(random.choice(sample_paths))
             replacement_pixel = tint_recolor(icon, pixel_color, alpha=alpha_i)
             replacement_pixel = cv2.resize(replacement_pixel, (icon_size, icon_size))
 

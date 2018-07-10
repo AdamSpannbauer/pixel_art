@@ -3,6 +3,7 @@
 download_icons.py
 icon_pixelate.py
 icon_stat_df.csv
+icon_paths.txt
 
 # icons
 icons/*

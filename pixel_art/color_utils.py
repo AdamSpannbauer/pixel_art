@@ -61,7 +61,7 @@ def get_dominant_color(image, k=3, image_processing_size=None):
     return list(dominant_color)
 
 
-def get_dominant_color_hsv(bgr_image, k=3, image_processing_size=None):
+def get_dominant_color_hsv(bgr_image, k=3, image_processing_size=(100, 100)):
     """utility wrapper function around get_dominant color for getting hsv dominant color from bgr image
 
     :param bgr_image: (numpy array) OpenCV image in bgr space to find dominant color of in hsv space
@@ -92,7 +92,7 @@ def get_dominant_color_paths(paths, max_icons=1000, verbose=True):
             print('processing icon #{}'.format(i))
         if i >= max_icons:
             break
-        h, s, v = get_dominant_color_hsv(cv2.imread(path))
+        h, s, v = get_dominant_color_hsv(imread(path))
         icon_stats_list.append((path, h, s, v))
 
     icon_stat_df = pd.DataFrame(icon_stats_list)

@@ -17,7 +17,8 @@ setup(name='pixel_art',
           'pandas',
           'imutils',
           'scikit-learn',
-          'scipy'
+          'scipy',
+          'scikit-image'
       ],
       extras_require={
           'cv2': ['opencv-contrib-python >= 3.4.0']
