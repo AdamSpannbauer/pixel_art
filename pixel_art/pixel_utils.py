@@ -41,7 +41,6 @@ def create_icon_grid(icon_paths, dims, icon_size):
 
     cols = []
     for col in range(ncol):
-        print(col)
         col = []
         for row in range(nrow):
             icon = imread(random.choice(icon_paths))
@@ -75,7 +74,7 @@ def pixel_icon_recolor(target_image, icon_paths, ncol=200, out_width=500, recolo
     pixelated_target = imutils.resize(pixelated_target, width=icon_size * ncol + 1)
 
     # create oversize grid to avoid mismatch dims with pixelated target
-    icon_grid = create_icon_grid(icon_paths, (nrow * 2, ncol * 2), icon_size)
+    icon_grid = create_icon_grid(icon_paths, (nrow + 3, ncol + 3), icon_size)
     icon_grid_crop = icon_grid[0:pixelated_target.shape[0], 0:pixelated_target.shape[1]]
 
     cv2.addWeighted(pixelated_target, recolor_alpha, icon_grid_crop, 1 - recolor_alpha, 0, icon_grid_crop)
@@ -109,7 +108,7 @@ def pixel_icon_match(target_image, icon_stat_df,
     pixelated_target, (nrow, ncol) = pixelate(target_image, ncol=ncol, out_width=out_width)
 
     icon_size = pixelated_target.shape[1] // ncol
-    pixelated_target = imutils.resize(pixelated_target, width=icon_size * ncol + 1)
+    pixelated_target = imutils.resize(pixelated_target, width=icon_size * ncol + 5)
 
     icon_pixel_output = pixelated_target.copy()
 
