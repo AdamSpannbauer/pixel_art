@@ -93,8 +93,11 @@ def get_dominant_color_paths(paths, max_icons=1000, verbose=True):
             print('processing icon #{}'.format(i))
         if i >= max_icons:
             break
-        h, s, v = get_dominant_color_hsv(imread(path))
-        icon_stats_list.append((path, h, s, v))
+        try:
+            h, s, v = get_dominant_color_hsv(imread(path))
+            icon_stats_list.append((path, h, s, v))
+        except:
+            continue
 
     icon_stat_df = pd.DataFrame(icon_stats_list)
     icon_stat_df.columns = ['path', 'h', 's', 'v']
