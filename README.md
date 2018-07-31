@@ -7,11 +7,13 @@ Convert Images into pixel 'art' where the pixels can be composed of provided ico
 * _standard pixelation created with `pixel_art.pixelate`_
 * _icon pixelation created with `pixel_art.pixel_icon_recolor` & `pixel_art.pixel_icon_match`_
   
-<p align='center'>
- <kbd>
-  <img src='readme/github_example.png' width = 75%>
- </kbd>
-</p>
+Original   | Pixelated
+:---------:|:-----------:
+<img src='readme/github_logo.png' width = 250> | <img src='readme/github_logo_pixel.png' width = 250>
+
+Recolored Icon Pixel Mosaic   | Matched Color Icon Pixel Mosaic
+:----------------------------:|:-----------:
+<img src='readme/github_logo_pixel_icon_recolor.png' width = 250> | <img src='readme/github_logo_pixel_icon_match_color.png' width = 250>
 
 ### Usage
 
@@ -82,7 +84,7 @@ icon_stats = pixel_art.get_icon_colors(icon_paths)
 # color of the pixelated input image
 match_icon_image = pixel_art.pixel_icon_match(image,
                                               icon_stats,
-                                              ncol=40,
+                                              ncol=80,
                                               out_width=500)
 ```
 

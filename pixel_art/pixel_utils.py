@@ -3,7 +3,7 @@ import cv2
 import imutils
 import numpy as np
 from .color_utils import tint_recolor
-from .utils import imread
+from .utils import imread, st_watermark
 
 
 def pixelate(image, ncol=10, out_width=500):
@@ -54,7 +54,7 @@ def create_icon_grid(icon_paths, dims, icon_size):
     return grid
 
 
-def pixel_icon_recolor(target_image, icon_paths, ncol=200, out_width=500, recolor_alpha=0.7):
+def pixel_icon_recolor(target_image, icon_paths, ncol=200, out_width=500, recolor_alpha=0.7, watermark=True):
     """convert an image to a 'pixelated' image where the pixels are icons
 
     :param target_image: (numpy array) OpenCV image to be pixelated with icons
@@ -62,6 +62,7 @@ def pixel_icon_recolor(target_image, icon_paths, ncol=200, out_width=500, recolo
     :param ncol: (int) how many icons wide should output image be
     :param out_width: (int) width of output image; aspect ratio of target_image will be preserved
     :param recolor_alpha: (float) alpha value [0-1] for recoloring icons to resemble pixelated target_image
+    :param watermark: (bool) should a Sensor Tower watermark be placed in bottom right corner of output?
     :return: a pixelated version of the target image where the pixels are icons from icon_path dir
 
     >>> from imutils.paths import list_images
@@ -80,13 +81,16 @@ def pixel_icon_recolor(target_image, icon_paths, ncol=200, out_width=500, recolo
     cv2.addWeighted(pixelated_target, recolor_alpha, icon_grid_crop, 1 - recolor_alpha, 0, icon_grid_crop)
     icon_grid_crop = imutils.resize(icon_grid_crop, width=out_width)
 
+    if watermark:
+        st_watermark(icon_grid)
+
     return icon_grid_crop
 
 
 def pixel_icon_match(target_image, icon_stat_df,
                      ncol=200, out_width=500, color_tolerance=30,
                      matched_alpha=0.2, unmatched_alpha=0.8,
-                     show_progress=True):
+                     show_progress=True, watermark=True):
     """convert an image to a 'pixelated' image where the pixels are icons
 
     will attempt to match icons to pixel colors to avoid having to change icons colors
@@ -102,6 +106,7 @@ def pixel_icon_match(target_image, icon_stat_df,
     :param unmatched_alpha: (float) alpha value [0-1] for recoloring icons to resemble pixelated target_image;
                             this will only be applied to icons not within color_tolerance
     :param show_progress: (bool) should an image/status messages be displayed showing progress of pixelation process
+    :param watermark: (bool) should a Sensor Tower watermark be placed in bottom right corner of output?
     :return: a pixelated version of the target image where the pixels are icons from icon_path dir
     """
 
@@ -157,5 +162,8 @@ def pixel_icon_match(target_image, icon_stat_df,
         cv2.destroyWindow('Icon Progress')
 
     icon_pixel_output = imutils.resize(icon_pixel_output, width=out_width)
+
+    if watermark:
+        st_watermark(icon_pixel_output)
 
     return icon_pixel_output

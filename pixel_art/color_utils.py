@@ -96,7 +96,8 @@ def get_dominant_color_paths(paths, max_icons=1000, verbose=True):
         try:
             h, s, v = get_dominant_color_hsv(imread(path))
             icon_stats_list.append((path, h, s, v))
-        except:
+        except Exception as e:   # don't care about what issue occurs; keep plugging
+            print(e)
             continue
 
     icon_stat_df = pd.DataFrame(icon_stats_list)
